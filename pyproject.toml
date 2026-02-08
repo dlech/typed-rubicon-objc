@@ -4,4 +4,16 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "typed-rubicon-objc.IOBluetooth",
+    "typed-rubicon-objc.Foundation",
+]
+
+[tool.uv.sources]
+"typed-rubicon-objc.IOBluetooth" = { workspace = true }
+"typed-rubicon-objc.Foundation" = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "frameworks/*",
+]
