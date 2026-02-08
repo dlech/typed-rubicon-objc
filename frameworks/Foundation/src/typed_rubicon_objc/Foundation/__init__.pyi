@@ -2,6 +2,8 @@
 # intentionally redefined here in order to be able to include more methods that
 # reference other types not available in rubicon.objc package.
 
+# pyright: reportPrivateUsage=false
+
 import ctypes
 import typing
 from abc import ABCMeta
