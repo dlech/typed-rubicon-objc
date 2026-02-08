@@ -9,6 +9,17 @@ dependencies = [
     "typed-rubicon-objc.Foundation",
 ]
 
+[dependency-groups]
+lint = [
+    "mypy>=1.19.1",
+    "pyright>=1.1.408",
+    "ruff>=0.15.0",
+    "ty>=0.0.15",
+]
+test = [
+    "pytest>=9.0.2",
+]
+
 [tool.uv.sources]
 "typed-rubicon-objc.IOBluetooth" = { workspace = true }
 "typed-rubicon-objc.Foundation" = { workspace = true }
@@ -17,3 +28,8 @@ dependencies = [
 members = [
     "frameworks/*",
 ]
+
+[tool.mypy]
+mypy_path = "typings"
+packages = "typed_rubicon_objc.Foundation,typed_rubicon_objc.IOBluetooth,tests"
+namespace_packages = true
