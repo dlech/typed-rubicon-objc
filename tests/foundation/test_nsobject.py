@@ -1,4 +1,12 @@
+from rubicon.objc.runtime import objc_id
 from typed_rubicon_objc.Foundation import NSObject
+
+
+def test_nsobject_ptr():
+    """Test that the ptr property returns a pointer of the correct type."""
+    obj = NSObject.alloc().init()
+    ptr = obj.ptr
+    assert isinstance(ptr, objc_id)
 
 
 def test_nsobject_creation():
