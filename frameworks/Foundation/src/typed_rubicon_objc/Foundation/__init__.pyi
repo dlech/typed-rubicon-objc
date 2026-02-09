@@ -13,7 +13,7 @@ from rubicon.objc.runtime import SEL, Class, objc_id
 from rubicon.objc.types import UnknownPointer
 
 if TYPE_CHECKING:
-    from rubicon.objc.api import _ConvertablePyType
+    from rubicon.objc.api import _ConvertablePyType  # ty: ignore[unresolved-import]
 
 __all__ = [
     "NSObject",
