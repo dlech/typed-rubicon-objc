@@ -1,3 +1,5 @@
+from typing import Any
+
 from rubicon.objc import ObjCClass, ObjCProtocol
 from rubicon.objc.runtime import load_library
 
@@ -11,14 +13,14 @@ _CLASS_NAMES = [
     "IOBluetoothRFCOMMChannelDelegate",
 ]
 
-_CLASSES: dict[str, ObjCClass] = {}
+_CLASSES: dict[str, Any] = {}
 
 _PROTOCOL_NAMES = [
     "IOBluetoothRFCOMMChannelDelegate",
     "IOBluetoothDeviceInquiryDelegate",
 ]
 
-_PROTOCOLS: dict[str, ObjCProtocol] = {}
+_PROTOCOLS: dict[str, Any] = {}
 
 
 def __getattr__(name: str):
@@ -34,4 +36,4 @@ def __getattr__(name: str):
         except KeyError:
             return _PROTOCOLS.setdefault(name, ObjCProtocol(name))
 
-    return
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

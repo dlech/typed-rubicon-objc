@@ -59,15 +59,3 @@ if sys.version_info < (3, 13):
         CPython's public C API, and thus not accessible on some systems (see #113).
         """
         ...
-
-else: ...
-
-def make_callback_returnable(ctype):
-    """Modify the given ctypes type so it can be returned from a callback function.
-
-    This function may be used as a decorator on a struct/union declaration.
-
-    The method is idempotent; it only modifies the type the first time it is invoked on
-    a type.
-    """
-    ...

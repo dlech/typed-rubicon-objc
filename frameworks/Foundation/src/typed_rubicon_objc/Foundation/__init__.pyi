@@ -8,9 +8,9 @@ import ctypes
 import typing
 from abc import ABCMeta
 from collections.abc import Iterator, Mapping, Sequence
-from typing import Any, Self, TypeVar
+from typing import Self, TypeVar
 
-from rubicon.objc.api import ObjCProtocol
+from rubicon.objc.api import ObjCClass, ObjCProtocol
 
 __all__ = [
     "NSObject",
@@ -24,10 +24,7 @@ __all__ = [
     "NSMutableDictionary",
 ]
 
-class _NSObjectMeta(type):
-    def __new__(cls, protocols: list[ObjCProtocol] = []) -> Any: ...
-
-class NSObject(typing.Protocol, metaclass=_NSObjectMeta):
+class NSObject(typing.Protocol, metaclass=ObjCClass):
     def __init__(self, id: ctypes.c_void_p) -> None: ...
     @classmethod
     def alloc(cls) -> Self: ...
@@ -60,7 +57,7 @@ class NSData(NSObject): ...
 
 _T = TypeVar("_T")
 
-class _NSArrayMeta(_NSObjectMeta, ABCMeta): ...
+class _NSArrayMeta(ObjCClass, ABCMeta): ...
 class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta): ...
 
 NSMutableArray = ...
@@ -68,7 +65,7 @@ NSMutableArray = ...
 _TKey = TypeVar("_TKey")
 _TValue = TypeVar("_TValue")
 
-class _NSDictionaryMeta(_NSObjectMeta, ABCMeta): ...
+class _NSDictionaryMeta(ObjCClass, ABCMeta): ...
 
 class NSDictionary(NSObject, Mapping[_TKey, _TValue], metaclass=_NSDictionaryMeta):
     def allKeys(self) -> NSArray[_TKey]: ...
