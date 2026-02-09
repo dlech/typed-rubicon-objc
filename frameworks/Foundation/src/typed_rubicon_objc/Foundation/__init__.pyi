@@ -6,7 +6,7 @@
 
 from abc import ABCMeta
 from collections.abc import Iterator, Mapping, Sequence
-from typing import TYPE_CHECKING, Self, TypeVar, overload
+from typing import TYPE_CHECKING, Self, TypeVar, overload, type_check_only
 
 from rubicon.objc.api import ObjCClass, ObjCInstance, ObjCProtocol
 from rubicon.objc.runtime import SEL, Class, objc_id
@@ -321,7 +321,9 @@ class NSData(NSObject): ...
 
 _T = TypeVar("_T")
 
+@type_check_only
 class _NSArrayMeta(ObjCClass, ABCMeta): ...
+
 class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta): ...
 
 NSMutableArray = ...
@@ -329,6 +331,7 @@ NSMutableArray = ...
 _TKey = TypeVar("_TKey")
 _TValue = TypeVar("_TValue")
 
+@type_check_only
 class _NSDictionaryMeta(ObjCClass, ABCMeta): ...
 
 class NSDictionary(NSObject, Mapping[_TKey, _TValue], metaclass=_NSDictionaryMeta):
