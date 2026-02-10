@@ -289,7 +289,8 @@ if sys.version_info < (3, 16):
             """Get the default event loop."""
             ...
 
-if sys.version_info < (3, 14): ...
+if sys.version_info < (3, 14):
+    def RubiconEventLoop() -> CFEventLoop: ...
 else:
     RubiconEventLoop = CFEventLoop
 

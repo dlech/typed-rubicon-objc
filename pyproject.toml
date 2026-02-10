@@ -36,6 +36,9 @@ mypy_path = "typings"
 packages = "typed_rubicon_objc.Foundation,typed_rubicon_objc.IOBluetooth,tests"
 namespace_packages = true
 
+[tool.pyright]
+typeCheckingMode = "strict"
+
 [tool.ty.environment]
 extra-paths = ["typings"]
 python = ".venv"
