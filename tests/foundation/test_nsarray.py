@@ -25,7 +25,7 @@ def test_nsarray_arrayWithObject():
     array = NSArray.arrayWithObject("test")
     assert array is not None
     assert array.count == 1
-    assert array.objectAtIndex(0) == "test"
+    assert array[0] == "test"
 
 
 def test_nsarray_arrayWithObjects():
@@ -33,9 +33,9 @@ def test_nsarray_arrayWithObjects():
     array = NSArray.arrayWithObjects("a", "b", "c")
     assert array is not None
     assert array.count == 3
-    assert array.objectAtIndex(0) == "a"
-    assert array.objectAtIndex(1) == "b"
-    assert array.objectAtIndex(2) == "c"
+    assert array[0] == "a"
+    assert array[1] == "b"
+    assert array[2] == "c"
 
 
 def test_nsarray_arrayWithArray():
@@ -44,7 +44,7 @@ def test_nsarray_arrayWithArray():
     copy = NSArray.arrayWithArray(original)
     assert copy is not None
     assert copy.count == 3
-    assert copy.objectAtIndex(0) == "x"
+    assert copy[0] == "x"
 
 
 def test_nsarray_count():
@@ -120,7 +120,7 @@ def test_nsarray_arrayByAddingObject():
     original = NSArray.arrayWithObjects("one", "two")
     new_array = original.arrayByAddingObject("three")
     assert new_array.count == 3
-    assert new_array.objectAtIndex(2) == "three"
+    assert new_array[2] == "three"
     # Original should be unchanged
     assert original.count == 2
 
@@ -131,8 +131,8 @@ def test_nsarray_arrayByAddingObjectsFromArray():
     array2 = NSArray.arrayWithObjects("c", "d")
     combined = array1.arrayByAddingObjectsFromArray(array2)
     assert combined.count == 4
-    assert combined.objectAtIndex(0) == "a"
-    assert combined.objectAtIndex(3) == "d"
+    assert combined[0] == "a"
+    assert combined[3] == "d"
 
 
 def test_nsarray_subarrayWithRange():
@@ -140,9 +140,9 @@ def test_nsarray_subarrayWithRange():
     array = NSArray.arrayWithObjects("zero", "one", "two", "three", "four")
     subarray = array.subarrayWithRange((1, 3))  # location=1, length=3
     assert subarray.count == 3
-    assert subarray.objectAtIndex(0) == "one"
-    assert subarray.objectAtIndex(1) == "two"
-    assert subarray.objectAtIndex(2) == "three"
+    assert subarray[0] == "one"
+    assert subarray[1] == "two"
+    assert subarray[2] == "three"
 
 
 def test_nsarray_componentsJoinedByString():
@@ -187,7 +187,7 @@ def test_nsarray_with_nsstrings():
     str2 = NSString.stringWithString("second")
     array = NSArray.arrayWithObjects(str1, str2)
     assert array.count == 2
-    assert isinstance(array.objectAtIndex(0), NSString)
+    assert isinstance(array[0], NSString)
 
 
 def test_nsarray_sortedArrayHint():
