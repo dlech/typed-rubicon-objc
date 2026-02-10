@@ -8,9 +8,10 @@ import ctypes
 from collections.abc import Callable, Generator, Iterable, Sequence
 from contextlib import contextmanager
 from ctypes import CDLL, Structure, c_void_p
-from typing import Any, Self
+from typing import Any
 
 from rubicon.objc.api import ObjCClass, ObjCInstance
+from typing_extensions import Self
 
 from .types import __arm__, __i386__, __x86_64__, with_encoding, with_preferred_encoding
 

@@ -6,11 +6,12 @@
 
 from abc import ABCMeta
 from collections.abc import Iterator, Mapping, Sequence
-from typing import TYPE_CHECKING, Self, TypeVar, overload, type_check_only
+from typing import TYPE_CHECKING, TypeVar, overload, type_check_only
 
 from rubicon.objc.api import ObjCClass, ObjCInstance, ObjCProtocol
 from rubicon.objc.runtime import SEL, Class, objc_id
 from rubicon.objc.types import UnknownPointer
+from typing_extensions import Self
 
 if TYPE_CHECKING:
     from rubicon.objc.api import _ConvertablePyType

@@ -1,6 +1,5 @@
 import ctypes
-from collections.abc import Buffer
-from typing import TYPE_CHECKING, NewType, Self, TypeAlias, overload
+from typing import TYPE_CHECKING, NewType, TypeAlias, overload
 
 from rubicon.objc.api import ObjCProtocol
 from rubicon.objc.runtime import SEL, objc_id
@@ -14,6 +13,7 @@ from typed_rubicon_objc.Foundation import (
     NSObject,
     NSString,
 )
+from typing_extensions import Buffer, Self
 
 IOBluetooth: ctypes.CDLL
 
