@@ -327,11 +327,11 @@ class _NSArrayMeta(ObjCClass, ABCMeta): ...
 
 class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     """An object representing a static ordered collection.
-
+    
     NSArray is immutable. For a mutable array, use NSMutableArray.
     """
 
-    # Creating Arrays
+    # Creating an Array
 
     @classmethod
     def array(cls) -> Self:
@@ -354,7 +354,28 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Creates and returns an array containing the objects in the list."""
         ...
 
+    def initWithArray(self, array: Sequence[_T], /) -> Self:
+        """Initializes a newly allocated array by placing in it the objects contained in a given array."""
+        ...
+
+    def initWithArray_copyItems(self, array: Sequence[_T], /, copyItems: bool) -> Self:
+        """Initializes a newly allocated array using anArray as the source of data objects for the array."""
+        ...
+
+    def initWithObjects(self, objects: list[_T], /) -> Self:
+        """Initializes a newly allocated array by placing in it the objects in the list."""
+        ...
+
     # Querying an Array
+
+    def containsObject(self, anObject: _T, /) -> bool:
+        """Returns a Boolean value that indicates whether a given object is present in the array."""
+        ...
+
+    @property
+    def count(self) -> int:  # type: ignore[override]
+        """The number of objects in the array."""
+        ...
 
     def objectAtIndex(self, index: int, /) -> _T:
         """Returns the object located at the specified index."""
@@ -368,18 +389,82 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """The last object in the array."""
         ...
 
-    def containsObject(self, anObject: _T, /) -> bool:
-        """Returns a Boolean value that indicates whether a given object is present in the array."""
+    def objectsAtIndexes(self, indexes: object, /) -> NSArray[_T]:
+        """Returns an array containing the objects in the array at the specified indexes."""
         ...
 
-    # Finding Objects
+    # Finding Objects in an Array
 
     def indexOfObject(self, anObject: _T, /) -> int:
         """Returns the lowest index whose corresponding array value is equal to a given object."""
         ...
 
+    def indexOfObject_inRange(self, anObject: _T, /, inRange: tuple[int, int]) -> int:
+        """Returns the lowest index within a specified range whose corresponding array value is equal to a given object."""
+        ...
+
     def indexOfObjectIdenticalTo(self, anObject: _T, /) -> int:
         """Returns the lowest index whose corresponding array value is identical to a given object."""
+        ...
+
+    def indexOfObjectIdenticalTo_inRange(self, anObject: _T, /, inRange: tuple[int, int]) -> int:
+        """Returns the lowest index within a specified range whose corresponding array value is identical to a given object."""
+        ...
+
+    def indexOfObjectPassingTest(self, predicate: object, /) -> int:
+        """Returns the index of the first object in the array that passes a test in a given block."""
+        ...
+
+    def indexOfObjectWithOptions_passingTest(self, opts: int, /, passingTest: object) -> int:
+        """Returns the index of an object in the array that passes a test in a given block for a given set of enumeration options."""
+        ...
+
+    def indexOfObjectAtIndexes_options_passingTest(self, s: object, /, options: int, passingTest: object) -> int:
+        """Returns the index of an object in the array with the specified indexes that passes a test in a given block for a given set of enumeration options."""
+        ...
+
+    def indexesOfObjectsPassingTest(self, predicate: object, /) -> object:
+        """Returns the indexes of objects in the array that pass a test in a given block."""
+        ...
+
+    def indexesOfObjectsWithOptions_passingTest(self, opts: int, /, passingTest: object) -> object:
+        """Returns the indexes of objects in the array that pass a test in a given block for a given set of enumeration options."""
+        ...
+
+    def indexesOfObjectsAtIndexes_options_passingTest(self, s: object, /, options: int, passingTest: object) -> object:
+        """Returns the indexes of objects in the array with the specified indexes that pass a test in a given block for a given set of enumeration options."""
+        ...
+
+    # Sending Messages to Elements
+
+    def makeObjectsPerformSelector(self, aSelector: SEL, /) -> None:
+        """Sends a message to each object in the array."""
+        ...
+
+    def makeObjectsPerformSelector_withObject(self, aSelector: SEL, /, withObject: object) -> None:
+        """Sends a message to each object in the array with the specified object as the argument."""
+        ...
+
+    def enumerateObjectsUsingBlock(self, block: object, /) -> None:
+        """Executes a given block using each object in the array."""
+        ...
+
+    def enumerateObjectsWithOptions_usingBlock(self, opts: int, /, usingBlock: object) -> None:
+        """Executes a given block using each object in the array, using the specified enumeration options."""
+        ...
+
+    def enumerateObjectsAtIndexes_options_usingBlock(self, s: object, /, options: int, usingBlock: object) -> None:
+        """Executes a given block using the objects in the array at the specified indexes."""
+        ...
+
+    # Comparing Arrays
+
+    def firstObjectCommonWithArray(self, otherArray: NSArray[_T], /) -> _T | None:
+        """Returns the first object contained in the receiving array that's equal to an object in another given array."""
+        ...
+
+    def isEqualToArray(self, otherArray: NSArray[_T], /) -> bool:
+        """Compares the receiving array to another array."""
         ...
 
     # Deriving New Arrays
@@ -392,20 +477,105 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Returns a new array that is a copy of the receiving array with the objects contained in another array added to the end."""
         ...
 
+    def filteredArrayUsingPredicate(self, predicate: object, /) -> Self:
+        """Evaluates a given predicate against each object in the receiving array and returns a new array containing the objects for which the predicate returns true."""
+        ...
+
     def subarrayWithRange(self, range: tuple[int, int], /) -> Self:
         """Returns a new array containing the receiving array's elements that fall within the limits specified by a given range."""
         ...
 
-    # Sorting Arrays
+    # Sorting
 
     def sortedArrayHint(self) -> NSData:
         """Returns a hint for the sorting of the array."""
+        ...
+
+    def sortedArrayUsingDescriptors(self, sortDescriptors: object, /) -> Self:
+        """Returns a copy of the receiving array sorted as specified by a given array of sort descriptors."""
+        ...
+
+    def sortedArrayUsingComparator(self, cmptr: object, /) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order as defined by the comparison method specified by a given block."""
+        ...
+
+    def sortedArrayUsingFunction_context(self, comparator: object, /, context: object) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order as defined by a given comparison function."""
+        ...
+
+    def sortedArrayUsingFunction_context_hint(self, comparator: object, /, context: object, hint: NSData) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order as defined by a given comparison function, with a hint for sorting."""
+        ...
+
+    def sortedArrayUsingSelector(self, comparator: SEL, /) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order as defined by a given selector."""
+        ...
+
+    def sortedArrayWithOptions_usingComparator(self, opts: int, /, usingComparator: object) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order as defined by a given comparator block, with a given set of options."""
         ...
 
     # Working with String Elements
 
     def componentsJoinedByString(self, separator: str | NSString, /) -> NSString:
         """Constructs and returns an NSString object that is the result of interposing a given separator between the elements of the array."""
+        ...
+
+    # Creating a Description
+
+    @property
+    def description(self) -> NSString:
+        """A textual representation of the array."""
+        ...
+
+    def descriptionWithLocale(self, locale: object, /) -> NSString:
+        """Returns a string that represents the contents of the array, formatted using the given locale."""
+        ...
+
+    def descriptionWithLocale_indent(self, locale: object, /, indent: int) -> NSString:
+        """Returns a string that represents the contents of the array, formatted using the given locale and indentation level."""
+        ...
+
+    # Collecting Paths
+
+    def pathsMatchingExtensions(self, filterTypes: list[str], /) -> list[str]:
+        """Returns an array containing all the pathname elements in the receiving array that have filename extensions from a given array."""
+        ...
+
+    # Key-Value Coding
+
+    def setValue_forKey(self, value: object, /, forKey: str) -> None:
+        """Sets the value for a given key in each object in the array."""
+        ...
+
+    def valueForKey(self, key: str, /) -> object:
+        """Returns an array containing the results of invoking valueForKey: using key on each of the array's objects."""
+        ...
+
+    # Key-Value Observing
+
+    def addObserver_forKeyPath_options_context(self, observer: object, /, forKeyPath: str, options: int, context: object) -> None:
+        """Raises an exception."""
+        ...
+
+    def addObserver_toObjectsAtIndexes_forKeyPath_options_context(self, observer: object, /, toObjectsAtIndexes: object, forKeyPath: str, options: int, context: object) -> None:
+        """Registers an observer to receive key value observer notifications for the specified key-path relative to the objects at the indexes."""
+        ...
+
+    def removeObserver_forKeyPath(self, observer: object, /, forKeyPath: str) -> None:
+        """Raises an exception."""
+        ...
+
+    def removeObserver_forKeyPath_context(self, observer: object, /, forKeyPath: str, context: object) -> None:
+        """Raises an exception."""
+        ...
+
+    def removeObserver_fromObjectsAtIndexes_forKeyPath(self, observer: object, /, fromObjectsAtIndexes: object, forKeyPath: str) -> None:
+        """Removes an observer from all key value observer notifications associated with the specified key-path relative to the array's objects at the indexes."""
+        ...
+
+    def removeObserver_fromObjectsAtIndexes_forKeyPath_context(self, observer: object, /, fromObjectsAtIndexes: object, forKeyPath: str, context: object) -> None:
+        """Removes an observer from all key value observer notifications associated with the specified key-path relative to the array's objects at the indexes, and with a given context."""
         ...
 
     # Sequence protocol methods (inherited from Sequence[_T])
