@@ -439,6 +439,10 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Returns an iterator over the array elements."""
         ...
 
+    def __contains__(self, value: object) -> bool:
+        """Returns True if the array contains the specified item."""
+        ...
+
 NSMutableArray = ...
 
 _TKey = TypeVar("_TKey")
