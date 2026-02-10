@@ -339,18 +339,19 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     @classmethod
+    def arrayWithArray(cls, array: Sequence[_T], /) -> Self:
+        """Creates and returns an array containing the objects in another given array."""
+        ...
+
+    @classmethod
     def arrayWithObject(cls, anObject: _T, /) -> Self:
         """Creates and returns an array containing a given object."""
         ...
 
+    # FIXME: not sure how to call varargs method without crashing
     @classmethod
     def arrayWithObjects(cls, objects: list[_T], /) -> Self:
         """Creates and returns an array containing the objects in the list."""
-        ...
-
-    @classmethod
-    def arrayWithArray(cls, array: NSArray[_T] | Sequence[_T], /) -> Self:
-        """Creates and returns an array containing the objects in another given array."""
         ...
 
     # Querying an Array
