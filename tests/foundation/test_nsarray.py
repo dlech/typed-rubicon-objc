@@ -2,6 +2,9 @@ import pytest
 from rubicon.objc.runtime import objc_id
 from typed_rubicon_objc.Foundation import NSArray, NSString
 
+# NSNotFound constant - typically NSIntegerMax on 64-bit systems
+NSNotFound = 9223372036854775807
+
 
 def test_nsarray_ptr():
     """Test that the ptr property returns a pointer of the correct type."""
@@ -99,9 +102,8 @@ def test_nsarray_indexOfObject():
 def test_nsarray_indexOfObject_not_found():
     """Test finding the index of an object that doesn't exist."""
     array = NSArray.arrayWithObjects("cat", "dog", "bird")
-    # NSNotFound is typically NSIntegerMax (9223372036854775807 on 64-bit)
     index = array.indexOfObject("fish")
-    assert index > 1000000  # Should be NSNotFound
+    assert index == NSNotFound
 
 
 def test_nsarray_indexOfObjectIdenticalTo():
