@@ -349,7 +349,7 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     @classmethod
-    def arrayWithArray(cls, array: NSArray[_T], /) -> Self:
+    def arrayWithArray(cls, array: NSArray[_T] | Sequence[_T], /) -> Self:
         """Creates and returns an array containing the objects in another given array."""
         ...
 
