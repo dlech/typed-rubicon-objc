@@ -325,7 +325,113 @@ _T = TypeVar("_T")
 @type_check_only
 class _NSArrayMeta(ObjCClass, ABCMeta): ...
 
-class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta): ...
+class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
+    """An object representing a static ordered collection.
+    
+    NSArray is immutable. For a mutable array, use NSMutableArray.
+    """
+
+    # Creating Arrays
+
+    @classmethod
+    def array(cls) -> Self:
+        """Creates and returns an empty array."""
+        ...
+
+    @classmethod
+    def arrayWithObject(cls, anObject: _T, /) -> Self:
+        """Creates and returns an array containing a given object."""
+        ...
+
+    @classmethod
+    def arrayWithObjects(cls, *objects: _T) -> Self:
+        """Creates and returns an array containing the objects in the argument list."""
+        ...
+
+    @classmethod
+    def arrayWithArray(cls, array: NSArray[_T], /) -> Self:
+        """Creates and returns an array containing the objects in another given array."""
+        ...
+
+    # Querying an Array
+
+    @property
+    def count(self) -> int:
+        """The number of objects in the array."""
+        ...
+
+    def objectAtIndex(self, index: int, /) -> _T:
+        """Returns the object located at the specified index."""
+        ...
+
+    @property
+    def firstObject(self) -> _T | None:
+        """The first object in the array."""
+        ...
+
+    @property
+    def lastObject(self) -> _T | None:
+        """The last object in the array."""
+        ...
+
+    def containsObject(self, anObject: _T, /) -> bool:
+        """Returns a Boolean value that indicates whether a given object is present in the array."""
+        ...
+
+    # Finding Objects
+
+    def indexOfObject(self, anObject: _T, /) -> int:
+        """Returns the lowest index whose corresponding array value is equal to a given object."""
+        ...
+
+    def indexOfObjectIdenticalTo(self, anObject: _T, /) -> int:
+        """Returns the lowest index whose corresponding array value is identical to a given object."""
+        ...
+
+    # Deriving New Arrays
+
+    def arrayByAddingObject(self, anObject: _T, /) -> Self:
+        """Returns a new array that is a copy of the receiving array with a given object added to the end."""
+        ...
+
+    def arrayByAddingObjectsFromArray(self, otherArray: NSArray[_T], /) -> Self:
+        """Returns a new array that is a copy of the receiving array with the objects contained in another array added to the end."""
+        ...
+
+    def subarrayWithRange(self, range: tuple[int, int], /) -> Self:
+        """Returns a new array containing the receiving array's elements that fall within the limits specified by a given range."""
+        ...
+
+    # Sorting Arrays
+
+    @property
+    def sortedArrayHint(self) -> NSData:
+        """Returns a hint for the sorting of the array."""
+        ...
+
+    # Working with String Elements
+
+    def componentsJoinedByString(self, separator: str | NSString, /) -> NSString:
+        """Constructs and returns an NSString object that is the result of interposing a given separator between the elements of the array."""
+        ...
+
+    # Sequence protocol methods (inherited from Sequence[_T])
+
+    def __getitem__(self, index: int) -> _T:
+        """Returns the object at the specified index."""
+        ...
+
+    def __len__(self) -> int:
+        """Returns the number of objects in the array."""
+        ...
+
+    def __iter__(self) -> Iterator[_T]:
+        """Returns an iterator over the array elements."""
+        ...
+
+    def __contains__(self, item: object) -> bool:
+        """Returns True if the array contains the specified item."""
+        ...
 
 NSMutableArray = ...
 
