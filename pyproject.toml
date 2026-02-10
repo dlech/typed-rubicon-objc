@@ -3,7 +3,7 @@ name = "typed-rubicon-objc"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.10"
 dependencies = [
     "typed-rubicon-objc.IOBluetooth",
     "typed-rubicon-objc.Foundation",
