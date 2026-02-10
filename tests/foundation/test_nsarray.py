@@ -17,14 +17,14 @@ def test_nsarray_array():
     """Test creating an empty array."""
     array = NSArray.array()
     assert array is not None
-    assert array.count == 0
+    assert len(array) == 0
 
 
 def test_nsarray_arrayWithObject():
     """Test creating an array with a single object."""
     array = NSArray.arrayWithObject("test")
     assert array is not None
-    assert array.count == 1
+    assert len(array) == 1
     assert array[0] == "test"
 
 
@@ -32,7 +32,7 @@ def test_nsarray_arrayWithObjects():
     """Test creating an array with multiple objects."""
     array = NSArray.arrayWithObjects(["a", "b", "c"])
     assert array is not None
-    assert array.count == 3
+    assert len(array) == 3
     assert array[0] == "a"
     assert array[1] == "b"
     assert array[2] == "c"
@@ -43,14 +43,14 @@ def test_nsarray_arrayWithArray():
     original = NSArray.arrayWithObjects(["x", "y", "z"])
     copy = NSArray.arrayWithArray(original)
     assert copy is not None
-    assert copy.count == 3
+    assert len(copy) == 3
     assert copy[0] == "x"
 
 
 def test_nsarray_count():
     """Test the count property."""
     array = NSArray.arrayWithObjects(["one", "two", "three"])
-    assert array.count == 3
+    assert len(array) == 3
 
 
 def test_nsarray_objectAtIndex():
@@ -64,25 +64,25 @@ def test_nsarray_objectAtIndex():
 def test_nsarray_firstObject():
     """Test the firstObject property."""
     array = NSArray.arrayWithObjects(["alpha", "beta", "gamma"])
-    assert array.firstObject == "alpha"
+    assert array.firstObject() == "alpha"
 
 
 def test_nsarray_firstObject_empty():
     """Test the firstObject property on an empty array."""
     array = NSArray.array()
-    assert array.firstObject is None
+    assert array.firstObject() is None
 
 
 def test_nsarray_lastObject():
     """Test the lastObject property."""
     array = NSArray.arrayWithObjects(["alpha", "beta", "gamma"])
-    assert array.lastObject == "gamma"
+    assert array.lastObject() == "gamma"
 
 
 def test_nsarray_lastObject_empty():
     """Test the lastObject property on an empty array."""
     array = NSArray.array()
-    assert array.lastObject is None
+    assert array.lastObject() is None
 
 
 def test_nsarray_containsObject():
@@ -119,10 +119,10 @@ def test_nsarray_arrayByAddingObject():
     """Test adding an object to create a new array."""
     original = NSArray.arrayWithObjects(["one", "two"])
     new_array = original.arrayByAddingObject("three")
-    assert new_array.count == 3
+    assert len(new_array) == 3
     assert new_array[2] == "three"
     # Original should be unchanged
-    assert original.count == 2
+    assert len(original) == 2
 
 
 def test_nsarray_arrayByAddingObjectsFromArray():
@@ -130,7 +130,7 @@ def test_nsarray_arrayByAddingObjectsFromArray():
     array1 = NSArray.arrayWithObjects(["a", "b"])
     array2 = NSArray.arrayWithObjects(["c", "d"])
     combined = array1.arrayByAddingObjectsFromArray(array2)
-    assert combined.count == 4
+    assert len(combined) == 4
     assert combined[0] == "a"
     assert combined[3] == "d"
 
@@ -139,7 +139,7 @@ def test_nsarray_subarrayWithRange():
     """Test creating a subarray with a range."""
     array = NSArray.arrayWithObjects(["zero", "one", "two", "three", "four"])
     subarray = array.subarrayWithRange((1, 3))  # location=1, length=3
-    assert subarray.count == 3
+    assert len(subarray) == 3
     assert subarray[0] == "one"
     assert subarray[1] == "two"
     assert subarray[2] == "three"
@@ -186,13 +186,13 @@ def test_nsarray_with_nsstrings():
     str1 = NSString.stringWithString("first")
     str2 = NSString.stringWithString("second")
     array = NSArray.arrayWithObjects([str1, str2])
-    assert array.count == 2
+    assert len(array) == 2
     assert isinstance(array[0], NSString)
 
 
 def test_nsarray_sortedArrayHint():
     """Test sortedArrayHint property."""
     array = NSArray.arrayWithObjects(["a", "b", "c"])
-    hint = array.sortedArrayHint
+    hint = array.sortedArrayHint()
     # Just verify it returns something - exact value is implementation-defined
     assert hint is not None
