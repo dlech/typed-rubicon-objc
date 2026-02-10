@@ -344,8 +344,8 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     @classmethod
-    def arrayWithObjects(cls, *objects: _T) -> Self:
-        """Creates and returns an array containing the objects in the argument list."""
+    def arrayWithObjects(cls, objects: list[_T], /) -> Self:
+        """Creates and returns an array containing the objects in the list."""
         ...
 
     @classmethod
@@ -355,25 +355,14 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Querying an Array
 
-    @property
-    def count(self) -> int:  # type: ignore[override]  # NSArray.count is a property, not a method
-        """The number of objects in the array.
-        
-        Note: This shadows Sequence.count() which counts occurrences of a value.
-        Use len() for the size or list(array).count(value) for occurrence counting.
-        """
-        ...
-
     def objectAtIndex(self, index: int, /) -> _T:
         """Returns the object located at the specified index."""
         ...
 
-    @property
     def firstObject(self) -> _T | None:
         """The first object in the array."""
         ...
 
-    @property
     def lastObject(self) -> _T | None:
         """The last object in the array."""
         ...
@@ -408,7 +397,6 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Sorting Arrays
 
-    @property
     def sortedArrayHint(self) -> NSData:
         """Returns a hint for the sorting of the array."""
         ...
