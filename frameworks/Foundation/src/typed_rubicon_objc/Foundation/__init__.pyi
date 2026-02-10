@@ -356,8 +356,12 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     # Querying an Array
 
     @property
-    def count(self) -> int:
-        """The number of objects in the array."""
+    def count(self) -> int:  # type: ignore[override]  # NSArray.count is a property, not a method
+        """The number of objects in the array.
+        
+        Note: This shadows Sequence.count() which counts occurrences of a value.
+        Use len() for the size or list(array).count(value) for occurrence counting.
+        """
         ...
 
     def objectAtIndex(self, index: int, /) -> _T:
@@ -417,8 +421,14 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Sequence protocol methods (inherited from Sequence[_T])
 
+    @overload
     def __getitem__(self, index: int) -> _T:
         """Returns the object at the specified index."""
+        ...
+
+    @overload
+    def __getitem__(self, index: slice) -> Self:
+        """Returns a subarray for the specified slice."""
         ...
 
     def __len__(self) -> int:
