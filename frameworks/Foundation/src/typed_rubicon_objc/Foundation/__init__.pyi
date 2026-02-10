@@ -348,13 +348,15 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Creates and returns an array containing the contents of the file specified by a given path."""
         ...
 
+    @overload
     @classmethod
     def arrayWithContentsOfURL(cls, url: object, /) -> Self | None:
         """Creates and returns an array containing the contents specified by a given URL."""
         ...
 
+    @overload
     @classmethod
-    def arrayWithContentsOfURL_error(cls, url: object, /) -> Self | None:
+    def arrayWithContentsOfURL(cls, url: object, /, *, error: object = None) -> Self | None:
         """Creates and returns an array containing the contents specified by a given URL."""
         ...
 
@@ -364,13 +366,15 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     # FIXME: not sure how to call varargs method without crashing
+    @overload
     @classmethod
     def arrayWithObjects(cls, objects: list[_T], /) -> Self:
         """Creates and returns an array containing the objects in the argument list."""
         ...
 
+    @overload
     @classmethod
-    def arrayWithObjects_count(cls, objects: object, /, count: int) -> Self:
+    def arrayWithObjects(cls, objects: object, /, *, count: int) -> Self:
         """Creates and returns an array that includes a given number of objects from a given C array."""
         ...
 
@@ -380,11 +384,13 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Initializes a newly allocated array."""
         ...
 
+    @overload
     def initWithArray(self, array: Sequence[_T], /) -> Self:
         """Initializes a newly allocated array by placing in it the objects contained in a given array."""
         ...
 
-    def initWithArray_copyItems(self, array: Sequence[_T], /, copyItems: bool) -> Self:
+    @overload
+    def initWithArray(self, array: Sequence[_T], /, *, copyItems: bool) -> Self:
         """Initializes a newly allocated array using anArray as the source of data objects for the array."""
         ...
 
@@ -392,19 +398,23 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Initializes a newly allocated array with the contents of the file specified by a given path."""
         ...
 
+    @overload
     def initWithContentsOfURL(self, url: object, /) -> Self | None:
         """Initializes a newly allocated array with the contents of the location specified by a given URL."""
         ...
 
-    def initWithContentsOfURL_error(self, url: object, /) -> Self | None:
+    @overload
+    def initWithContentsOfURL(self, url: object, /, *, error: object = None) -> Self | None:
         """Initializes a newly allocated array with the contents of the location specified by a given URL."""
         ...
 
+    @overload
     def initWithObjects(self, objects: list[_T], /) -> Self:
         """Initializes a newly allocated array by placing in it the objects in the argument list."""
         ...
 
-    def initWithObjects_count(self, objects: object, /, count: int) -> Self:
+    @overload
+    def initWithObjects(self, objects: object, /, *, count: int) -> Self:
         """Initializes a newly allocated array to include a given number of objects from a given C array."""
         ...
 
@@ -423,11 +433,13 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """The number of objects in the array."""
         ...
 
+    @overload
     def getObjects(self, objects: object, /) -> None:
         """Copies all the objects contained in the array to aBuffer."""
         ...
 
-    def getObjects_range(self, objects: object, /, range: tuple[int, int]) -> None:
+    @overload
+    def getObjects(self, objects: object, /, *, range: tuple[int, int]) -> None:
         """Copies references to objects contained in the array that fall within the specified range to aBuffer."""
         ...
 
@@ -463,19 +475,23 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Finding Objects in an Array
 
+    @overload
     def indexOfObject(self, anObject: _T, /) -> int:
         """Returns the lowest index whose corresponding array value is equal to a given object."""
         ...
 
-    def indexOfObject_inRange(self, anObject: _T, /, inRange: tuple[int, int]) -> int:
+    @overload
+    def indexOfObject(self, anObject: _T, /, *, inRange: tuple[int, int]) -> int:
         """Returns the lowest index within a specified range whose corresponding array value is equal to a given object."""
         ...
 
+    @overload
     def indexOfObjectIdenticalTo(self, anObject: _T, /) -> int:
         """Returns the lowest index whose corresponding array value is identical to a given object."""
         ...
 
-    def indexOfObjectIdenticalTo_inRange(self, anObject: _T, /, inRange: tuple[int, int]) -> int:
+    @overload
+    def indexOfObjectIdenticalTo(self, anObject: _T, /, *, inRange: tuple[int, int]) -> int:
         """Returns the lowest index within a specified range whose corresponding array value is identical to a given object."""
         ...
 
@@ -483,11 +499,11 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Returns the index of the first object in the array that passes a test in a given block."""
         ...
 
-    def indexOfObjectWithOptions_passingTest(self, opts: int, /, passingTest: object) -> int:
+    def indexOfObjectWithOptions(self, opts: int, /, *, passingTest: object) -> int:
         """Returns the index of an object in the array that passes a test in a given block for a given set of enumeration options."""
         ...
 
-    def indexOfObjectAtIndexes_options_passingTest(self, s: object, /, options: int, passingTest: object) -> int:
+    def indexOfObjectAtIndexes(self, s: object, /, *, options: int, passingTest: object) -> int:
         """Returns the index, from a given set of indexes, of the first object in the array that passes a test in a given block for a given set of enumeration options."""
         ...
 
@@ -495,15 +511,15 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Returns the indexes of objects in the array that pass a test in a given block."""
         ...
 
-    def indexesOfObjectsWithOptions_passingTest(self, opts: int, /, passingTest: object) -> object:
+    def indexesOfObjectsWithOptions(self, opts: int, /, *, passingTest: object) -> object:
         """Returns the indexes of objects in the array that pass a test in a given block for a given set of enumeration options."""
         ...
 
-    def indexesOfObjectsAtIndexes_options_passingTest(self, s: object, /, options: int, passingTest: object) -> object:
+    def indexesOfObjectsAtIndexes(self, s: object, /, *, options: int, passingTest: object) -> object:
         """Returns the indexes, from a given set of indexes, of objects in the array that pass a test in a given block for a given set of enumeration options."""
         ...
 
-    def indexOfObject_inSortedRange_options_usingComparator(self, obj: _T, /, inSortedRange: tuple[int, int], options: int, usingComparator: object) -> int:
+    def indexOfObject(self, obj: _T, /, *, inSortedRange: tuple[int, int], options: int, usingComparator: object) -> int:
         """Returns the index, within a specified range, of an object compared with elements in the array using a given NSComparator block."""
         ...
 
@@ -513,7 +529,7 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Sends to each object in the array the message identified by a given selector, starting with the first object and continuing through the array to the last object."""
         ...
 
-    def makeObjectsPerformSelector_withObject(self, aSelector: SEL, /, withObject: object) -> None:
+    def makeObjectsPerformSelector(self, aSelector: SEL, /, *, withObject: object) -> None:
         """Sends the aSelector message to each object in the array, starting with the first object and continuing through the array to the last object."""
         ...
 
@@ -521,11 +537,11 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Executes a given closure or block using each object in the array, starting with the first object and continuing through the array to the last object."""
         ...
 
-    def enumerateObjectsWithOptions_usingBlock(self, opts: int, /, usingBlock: object) -> None:
+    def enumerateObjectsWithOptions(self, opts: int, /, *, usingBlock: object) -> None:
         """Executes a given closure or block using each object in the array with the specified options."""
         ...
 
-    def enumerateObjectsAtIndexes_options_usingBlock(self, s: object, /, options: int, usingBlock: object) -> None:
+    def enumerateObjectsAtIndexes(self, s: object, /, *, options: int, usingBlock: object) -> None:
         """Executes a given block using the objects in the array at the specified indexes."""
         ...
 
@@ -564,11 +580,13 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Analyzes the array and returns a "hint" that speeds the sorting of the array when the hint is supplied to sortedArrayUsingFunction:context:hint:."""
         ...
 
-    def sortedArrayUsingFunction_context(self, comparator: object, /, context: object) -> Self:
+    @overload
+    def sortedArrayUsingFunction(self, comparator: object, /, *, context: object) -> Self:
         """Returns a new array that lists the receiving array's elements in ascending order as defined by the comparison function comparator."""
         ...
 
-    def sortedArrayUsingFunction_context_hint(self, comparator: object, /, context: object, hint: NSData) -> Self:
+    @overload
+    def sortedArrayUsingFunction(self, comparator: object, /, *, context: object, hint: NSData) -> Self:
         """Returns a new array that lists the receiving array's elements in ascending order as defined by the comparison function comparator."""
         ...
 
@@ -584,7 +602,7 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Returns an array that lists the receiving array's elements in ascending order, as determined by the comparison method specified by a given NSComparator block."""
         ...
 
-    def sortedArrayWithOptions_usingComparator(self, opts: int, /, usingComparator: object) -> Self:
+    def sortedArrayWithOptions(self, opts: int, /, *, usingComparator: object) -> Self:
         """Returns an array that lists the receiving array's elements in ascending order, as determined by the comparison method specified by a given NSComparator block."""
         ...
 
@@ -601,25 +619,29 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """A string that represents the contents of the array, formatted as a property list."""
         ...
 
+    @overload
     def descriptionWithLocale(self, locale: object, /) -> NSString:
         """Returns a string that represents the contents of the array, formatted as a property list."""
         ...
 
-    def descriptionWithLocale_indent(self, locale: object, /, indent: int) -> NSString:
+    @overload
+    def descriptionWithLocale(self, locale: object, /, *, indent: int) -> NSString:
         """Returns a string that represents the contents of the array, formatted as a property list."""
         ...
 
     # Storing Arrays
 
-    def writeToFile_atomically(self, path: str, /, atomically: bool) -> bool:
+    def writeToFile(self, path: str, /, *, atomically: bool) -> bool:
         """Writes the contents of the array to a file at a given path."""
         ...
 
-    def writeToURL_atomically(self, url: object, /, atomically: bool) -> bool:
+    @overload
+    def writeToURL(self, url: object, /, *, atomically: bool) -> bool:
         """Writes the contents of the array to the location specified by a given URL."""
         ...
 
-    def writeToURL_error(self, url: object, /) -> bool:
+    @overload
+    def writeToURL(self, url: object, /, *, error: object = None) -> bool:
         """Writes the contents of the array to the location specified by a given URL."""
         ...
 
@@ -631,33 +653,39 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Key-Value Observing
 
-    def addObserver_forKeyPath_options_context(self, observer: object, /, forKeyPath: str, options: int, context: object) -> None:
+    @overload
+    def addObserver(self, observer: object, /, *, forKeyPath: str, options: int, context: object) -> None:
         """Raises an exception."""
         ...
 
-    def removeObserver_forKeyPath(self, observer: object, /, forKeyPath: str) -> None:
+    @overload
+    def removeObserver(self, observer: object, /, *, forKeyPath: str) -> None:
         """Raises an exception."""
         ...
 
-    def removeObserver_forKeyPath_context(self, observer: object, /, forKeyPath: str, context: object) -> None:
+    @overload
+    def removeObserver(self, observer: object, /, *, forKeyPath: str, context: object) -> None:
         """Raises an exception."""
         ...
 
-    def removeObserver_fromObjectsAtIndexes_forKeyPath_context(self, observer: object, /, fromObjectsAtIndexes: object, forKeyPath: str, context: object) -> None:
+    @overload
+    def removeObserver(self, observer: object, /, *, fromObjectsAtIndexes: object, forKeyPath: str, context: object) -> None:
         """Raises an exception."""
         ...
 
-    def addObserver_toObjectsAtIndexes_forKeyPath_options_context(self, observer: object, /, toObjectsAtIndexes: object, forKeyPath: str, options: int, context: object) -> None:
+    @overload
+    def addObserver(self, observer: object, /, *, toObjectsAtIndexes: object, forKeyPath: str, options: int, context: object) -> None:
         """Registers an observer to receive key value observer notifications for the specified key-path relative to the objects at the indexes."""
         ...
 
-    def removeObserver_fromObjectsAtIndexes_forKeyPath(self, observer: object, /, fromObjectsAtIndexes: object, forKeyPath: str) -> None:
+    @overload
+    def removeObserver(self, observer: object, /, *, fromObjectsAtIndexes: object, forKeyPath: str) -> None:
         """Removes anObserver from all key value observer notifications associated with the specified keyPath relative to the array's objects at indexes."""
         ...
 
     # Key-Value Coding
 
-    def setValue_forKey(self, value: object, /, forKey: str) -> None:
+    def setValue(self, value: object, /, *, forKey: str) -> None:
         """Invokes setValue:forKey: on each of the array's items using the specified value and key."""
         ...
 
@@ -677,15 +705,18 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Comparing with Another Array
 
+    @overload
     def differenceFromArray(self, other: NSArray[_T], /) -> object:
         """Compares two arrays to create a difference object that represents the changes between them."""
         ...
 
-    def differenceFromArray_withOptions(self, other: NSArray[_T], /, withOptions: int) -> object:
+    @overload
+    def differenceFromArray(self, other: NSArray[_T], /, *, withOptions: int) -> object:
         """Compares two arrays, with options, to create a difference object that represents the changes between them."""
         ...
 
-    def differenceFromArray_withOptions_usingEquivalenceTest(self, other: NSArray[_T], /, withOptions: int, usingEquivalenceTest: object) -> object:
+    @overload
+    def differenceFromArray(self, other: NSArray[_T], /, *, withOptions: int, usingEquivalenceTest: object) -> object:
         """Compares two arrays, using the provided block and with options, to create a difference object that represents the changes between them."""
         ...
 
