@@ -348,20 +348,6 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Creates and returns an array containing the contents of the file specified by a given path."""
         ...
 
-    @overload
-    @classmethod
-    def arrayWithContentsOfURL(cls, url: object, /) -> Self | None:
-        """Creates and returns an array containing the contents specified by a given URL."""
-        ...
-
-    @overload
-    @classmethod
-    def arrayWithContentsOfURL(
-        cls, url: object, /, *, error: object = None
-    ) -> Self | None:
-        """Creates and returns an array containing the contents specified by a given URL."""
-        ...
-
     @classmethod
     def arrayWithObject(cls, anObject: _T, /) -> Self:
         """Creates and returns an array containing a given object."""
@@ -394,22 +380,6 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     @overload
     def initWithArray(self, array: Sequence[_T], /, *, copyItems: bool) -> Self:
         """Initializes a newly allocated array using anArray as the source of data objects for the array."""
-        ...
-
-    def initWithContentsOfFile(self, path: str, /) -> Self | None:
-        """Initializes a newly allocated array with the contents of the file specified by a given path."""
-        ...
-
-    @overload
-    def initWithContentsOfURL(self, url: object, /) -> Self | None:
-        """Initializes a newly allocated array with the contents of the location specified by a given URL."""
-        ...
-
-    @overload
-    def initWithContentsOfURL(
-        self, url: object, /, *, error: object = None
-    ) -> Self | None:
-        """Initializes a newly allocated array with the contents of the location specified by a given URL."""
         ...
 
     @overload
@@ -545,10 +515,12 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Sending Messages to Elements
 
+    @overload
     def makeObjectsPerformSelector(self, aSelector: SEL, /) -> None:
         """Sends to each object in the array the message identified by a given selector, starting with the first object and continuing through the array to the last object."""
         ...
 
+    @overload
     def makeObjectsPerformSelector(
         self, aSelector: SEL, /, *, withObject: object
     ) -> None:
@@ -655,22 +627,6 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     @overload
     def descriptionWithLocale(self, locale: object, /, *, indent: int) -> NSString:
         """Returns a string that represents the contents of the array, formatted as a property list."""
-        ...
-
-    # Storing Arrays
-
-    def writeToFile(self, path: str, /, *, atomically: bool) -> bool:
-        """Writes the contents of the array to a file at a given path."""
-        ...
-
-    @overload
-    def writeToURL(self, url: object, /, *, atomically: bool) -> bool:
-        """Writes the contents of the array to the location specified by a given URL."""
-        ...
-
-    @overload
-    def writeToURL(self, url: object, /, *, error: object = None) -> bool:
-        """Writes the contents of the array to the location specified by a given URL."""
         ...
 
     # Collecting Paths
