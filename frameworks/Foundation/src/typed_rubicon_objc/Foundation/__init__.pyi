@@ -327,7 +327,7 @@ class _NSArrayMeta(ObjCClass, ABCMeta): ...
 
 class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     """An object representing a static ordered collection.
-    
+
     NSArray is immutable. For a mutable array, use NSMutableArray.
     """
 

@@ -1,4 +1,3 @@
-import pytest
 from rubicon.objc.runtime import objc_id
 from typed_rubicon_objc.Foundation import NSArray, NSString
 
