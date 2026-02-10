@@ -14,7 +14,6 @@ from typing import (
     Any,
     Final,
     ParamSpec,
-    Self,
     TypeAlias,
     TypeVar,
     _get_type_hints_obj_allowed_types,
@@ -22,6 +21,7 @@ from typing import (
 )
 
 from rubicon.objc.runtime import Method, objc_id
+from typing_extensions import Self
 
 __all__ = [
     "Block",
