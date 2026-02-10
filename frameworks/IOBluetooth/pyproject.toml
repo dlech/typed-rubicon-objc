@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "David Lechner", email = "david@pybricks.com" }
 ]
-requires-python = ">=3.14"
+requires-python = ">=3.10"
 dependencies = ["rubicon-objc", "typed-rubicon-objc.Foundation"]
 
 [tool.uv.sources]
