@@ -34,4 +34,4 @@ jobs:
         uv run pyright --pythonversion=${{ matrix.python-version }}
 
     - name: Run tests
-      run: uv run pytest
+      run: uv run pytest -s -vvv

@@ -1,3 +1,4 @@
+import types
 from typing import Any
 
 from rubicon.objc.api import NSArray as NSArray
@@ -45,9 +46,16 @@ __all__.extend(_CLASSES)  # pyright: ignore[reportUnsupportedDunderAll]
 _CLASS_MAP: dict[str, Any] = {}
 
 
+# HACK: Add __class_getitem__ to NSArray to support NSArray[T] generics
+if not hasattr(NSArray, "__class_getitem__"):
+    setattr(NSArray, "__class_getitem__", types.MethodType(types.GenericAlias, NSArray))
+
+
 def __getattr__(name: str):
     if name in _CLASSES:
         try:
             return _CLASS_MAP[name]
         except KeyError:
-            return _CLASS_MAP.setdefault(name, ObjCClass(name))
+            cls = ObjCClass(name)
+
+            return _CLASS_MAP.setdefault(name, cls)

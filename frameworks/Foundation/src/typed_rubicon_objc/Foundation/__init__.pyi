@@ -4,12 +4,15 @@
 
 # pyright: reportPrivateUsage=false
 
+import ctypes
 from abc import ABCMeta
-from collections.abc import Iterator, Mapping, Sequence
-from typing import TYPE_CHECKING, TypeVar, overload, type_check_only
+from collections.abc import Callable, Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING, Protocol, TypeVar, overload, type_check_only
 
 from rubicon.objc.api import ObjCClass, ObjCInstance, ObjCProtocol
 from rubicon.objc.runtime import SEL, Class, objc_id
+from rubicon.objc.types import NSInteger as NSInteger
+from rubicon.objc.types import NSUInteger as NSUInteger
 from rubicon.objc.types import UnknownPointer
 from typing_extensions import Self
 
@@ -17,6 +20,8 @@ if TYPE_CHECKING:
     from rubicon.objc.api import _ConvertablePyType
 
 __all__ = [
+    "NSInteger",
+    "NSUInteger",
     "NSObject",
     "NSNumber",
     "NSDecimalNumber",
@@ -317,7 +322,11 @@ class NSObject(ObjCInstance, metaclass=ObjCClass):
 
 class NSNumber(NSObject): ...
 class NSDecimalNumber(NSObject): ...
-class NSString(NSObject): ...
+
+class NSString(NSObject):
+    @classmethod
+    def stringWithString(cls, string: NSString | str, /) -> Self: ...
+
 class NSData(NSObject): ...
 
 _T = TypeVar("_T")
@@ -325,7 +334,380 @@ _T = TypeVar("_T")
 @type_check_only
 class _NSArrayMeta(ObjCClass, ABCMeta): ...
 
-class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta): ...
+_T_co = TypeVar("_T_co", covariant=True)
+
+class _ConvertableTo(Protocol[_T_co]): ...
+
+class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
+    """An object representing a static ordered collection.
+
+    NSArray is immutable. For a mutable array, use NSMutableArray.
+    """
+
+    # Creating an Array
+
+    @classmethod
+    def array(cls) -> Self:
+        """Creates and returns an empty array."""
+        ...
+
+    @classmethod
+    def arrayWithArray(cls, array: Sequence[_ConvertableTo[_T]], /) -> Self:
+        """Creates and returns an array containing the objects in another given array."""
+        ...
+
+    @classmethod
+    def arrayWithObject(cls, anObject: _ConvertableTo[_T], /) -> Self:
+        """Creates and returns an array containing a given object."""
+        ...
+
+    # FIXME: not sure how to call varargs method without crashing
+    @overload
+    @classmethod
+    def arrayWithObjects(cls, objects: list[_ConvertableTo[_T]], /) -> Self:
+        """Creates and returns an array containing the objects in the argument list."""
+        ...
+
+    @overload
+    @classmethod
+    def arrayWithObjects(cls, objects: _ConvertableTo[_T], /, *, count: int) -> Self:
+        """Creates and returns an array that includes a given number of objects from a given C array."""
+        ...
+
+    # Initializing an Array
+
+    def init(self) -> Self:
+        """Initializes a newly allocated array."""
+        ...
+
+    @overload
+    def initWithArray(self, array: Sequence[_T], /) -> Self:
+        """Initializes a newly allocated array by placing in it the objects contained in a given array."""
+        ...
+
+    @overload
+    def initWithArray(self, array: Sequence[_T], /, *, copyItems: bool) -> Self:
+        """Initializes a newly allocated array using anArray as the source of data objects for the array."""
+        ...
+
+    @overload
+    def initWithObjects(self, objects: list[_ConvertableTo[_T]], /) -> Self:
+        """Initializes a newly allocated array by placing in it the objects in the argument list."""
+        ...
+
+    @overload
+    def initWithObjects(self, objects: _ConvertableTo[_T], /, *, count: int) -> Self:
+        """Initializes a newly allocated array to include a given number of objects from a given C array."""
+        ...
+
+    def initWithCoder(self, coder: object, /) -> Self | None:
+        """Initializes an array with the contents of a coder."""
+        ...
+
+    # Querying an Array
+
+    def containsObject(self, anObject: _ConvertableTo[_T], /) -> bool:
+        """Returns a Boolean value that indicates whether a given object is present in the array."""
+        ...
+
+    # Python Sequence count takes precedence
+    # @property
+    # def count(self) -> int:
+    #     """The number of objects in the array."""
+    #     ...
+
+    @overload
+    def getObjects(self, objects: object, /) -> None:
+        """Copies all the objects contained in the array to aBuffer."""
+        ...
+
+    @overload
+    def getObjects(self, objects: object, /, *, range: tuple[int, int]) -> None:
+        """Copies references to objects contained in the array that fall within the specified range to aBuffer."""
+        ...
+
+    def firstObject(self) -> _T | None:
+        """The first object in the array."""
+        ...
+
+    def lastObject(self) -> _T | None:
+        """The last object in the array."""
+        ...
+
+    def objectAtIndex(self, index: int, /) -> _T:
+        """Returns the object located at the specified index."""
+        ...
+
+    def objectAtIndexedSubscript(self, idx: int, /) -> _T:
+        """Returns the object at the specified index."""
+        ...
+
+    def objectsAtIndexes(self, indexes: object, /) -> NSArray[_T]:
+        """Returns an array containing the objects in the array at the indexes specified by a given index set."""
+        ...
+
+    def objectEnumerator(self) -> object:
+        """Returns an enumerator object that lets you access each object in the array."""
+        ...
+
+    def reverseObjectEnumerator(self) -> object:
+        """Returns an enumerator object that lets you access each object in the array, in reverse order."""
+        ...
+
+    # Finding Objects in an Array
+
+    @overload
+    def indexOfObject(self, anObject: _ConvertableTo[_T], /) -> int:
+        """Returns the lowest index whose corresponding array value is equal to a given object."""
+        ...
+
+    @overload
+    def indexOfObject(
+        self, anObject: _ConvertableTo[_T], /, *, inRange: tuple[int, int]
+    ) -> int:
+        """Returns the lowest index within a specified range whose corresponding array value is equal to a given object."""
+        ...
+
+    @overload
+    def indexOfObjectIdenticalTo(self, anObject: _ConvertableTo[_T], /) -> int:
+        """Returns the lowest index whose corresponding array value is identical to a given object."""
+        ...
+
+    @overload
+    def indexOfObjectIdenticalTo(
+        self, anObject: _ConvertableTo[_T], /, *, inRange: tuple[int, int]
+    ) -> int:
+        """Returns the lowest index within a specified range whose corresponding array value is identical to a given object."""
+        ...
+
+    def indexOfObjectPassingTest(self, predicate: object, /) -> int:
+        """Returns the index of the first object in the array that passes a test in a given block."""
+        ...
+
+    def indexOfObjectWithOptions(self, opts: int, /, *, passingTest: object) -> int:
+        """Returns the index of an object in the array that passes a test in a given block for a given set of enumeration options."""
+        ...
+
+    def indexOfObjectAtIndexes(
+        self,
+        s: object,
+        /,
+        *,
+        options: int,
+        passingTest: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool],
+    ) -> int:
+        """Returns the index, from a given set of indexes, of the first object in the array that passes a test in a given block for a given set of enumeration options."""
+        ...
+
+    def indexesOfObjectsPassingTest(
+        self, predicate: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool], /
+    ) -> object:
+        """Returns the indexes of objects in the array that pass a test in a given block."""
+        ...
+
+    def indexesOfObjectsWithOptions(
+        self,
+        opts: int,
+        /,
+        *,
+        passingTest: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool],
+    ) -> object:
+        """Returns the indexes of objects in the array that pass a test in a given block for a given set of enumeration options."""
+        ...
+
+    def indexesOfObjectsAtIndexes(
+        self,
+        s: object,
+        /,
+        *,
+        options: int,
+        passingTest: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool],
+    ) -> object:
+        """Returns the indexes, from a given set of indexes, of objects in the array that pass a test in a given block for a given set of enumeration options."""
+        ...
+
+    # Sending Messages to Elements
+
+    @overload
+    def makeObjectsPerformSelector(self, aSelector: SEL, /) -> None:
+        """Sends to each object in the array the message identified by a given selector, starting with the first object and continuing through the array to the last object."""
+        ...
+
+    @overload
+    def makeObjectsPerformSelector(
+        self, aSelector: SEL, /, *, withObject: object
+    ) -> None:
+        """Sends the aSelector message to each object in the array, starting with the first object and continuing through the array to the last object."""
+        ...
+
+    def enumerateObjectsUsingBlock(self, block: object, /) -> None:
+        """Executes a given closure or block using each object in the array, starting with the first object and continuing through the array to the last object."""
+        ...
+
+    def enumerateObjectsWithOptions(self, opts: int, /, *, usingBlock: object) -> None:
+        """Executes a given closure or block using each object in the array with the specified options."""
+        ...
+
+    def enumerateObjectsAtIndexes(
+        self,
+        s: object,
+        /,
+        *,
+        options: int,
+        usingBlock: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], None],
+    ) -> None:
+        """Executes a given block using the objects in the array at the specified indexes."""
+        ...
+
+    # Comparing Arrays
+
+    def firstObjectCommonWithArray(self, otherArray: NSArray[_T], /) -> _T | None:
+        """Returns the first object contained in the receiving array that's equal to an object in another given array."""
+        ...
+
+    def isEqualToArray(self, otherArray: NSArray[_T], /) -> bool:
+        """Compares the receiving array to another array."""
+        ...
+
+    # Deriving New Arrays
+
+    def arrayByAddingObject(self, anObject: _ConvertableTo[_T], /) -> Self:
+        """Returns a new array that is a copy of the receiving array with a given object added to the end."""
+        ...
+
+    def arrayByAddingObjectsFromArray(self, otherArray: NSArray[_T], /) -> Self:
+        """Returns a new array that is a copy of the receiving array with the objects contained in another array added to the end."""
+        ...
+
+    def filteredArrayUsingPredicate(self, predicate: object, /) -> Self:
+        """Evaluates a given predicate against each object in the receiving array and returns a new array containing the objects for which the predicate returns true."""
+        ...
+
+    def subarrayWithRange(self, range: tuple[int, int], /) -> Self:
+        """Returns a new array containing the receiving array's elements that fall within the limits specified by a given range."""
+        ...
+
+    # Sorting
+
+    def sortedArrayHint(self) -> NSData:
+        """Analyzes the array and returns a "hint" that speeds the sorting of the array when the hint is supplied to sortedArrayUsingFunction:context:hint:."""
+        ...
+
+    @overload
+    def sortedArrayUsingFunction(
+        self, comparator: object, /, *, context: object
+    ) -> Self:
+        """Returns a new array that lists the receiving array's elements in ascending order as defined by the comparison function comparator."""
+        ...
+
+    @overload
+    def sortedArrayUsingFunction(
+        self, comparator: object, /, *, context: object, hint: NSData
+    ) -> Self:
+        """Returns a new array that lists the receiving array's elements in ascending order as defined by the comparison function comparator."""
+        ...
+
+    def sortedArrayUsingDescriptors(self, sortDescriptors: object, /) -> Self:
+        """Returns a copy of the receiving array sorted as specified by a given array of sort descriptors."""
+        ...
+
+    def sortedArrayUsingSelector(self, comparator: SEL, /) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order, as determined by the comparison method specified by a given selector."""
+        ...
+
+    def sortedArrayUsingComparator(self, cmptr: object, /) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order, as determined by the comparison method specified by a given NSComparator block."""
+        ...
+
+    def sortedArrayWithOptions(self, opts: int, /, *, usingComparator: object) -> Self:
+        """Returns an array that lists the receiving array's elements in ascending order, as determined by the comparison method specified by a given NSComparator block."""
+        ...
+
+    # Working with String Elements
+
+    def componentsJoinedByString(self, separator: str | NSString, /) -> NSString:
+        """Constructs and returns an NSString object that is the result of interposing a given separator between the elements of the array."""
+        ...
+
+    # Creating a Description
+
+    @property
+    def description(self) -> NSString:
+        """A string that represents the contents of the array, formatted as a property list."""
+        ...
+
+    @overload
+    def descriptionWithLocale(self, locale: object, /) -> NSString:
+        """Returns a string that represents the contents of the array, formatted as a property list."""
+        ...
+
+    @overload
+    def descriptionWithLocale(self, locale: object, /, *, indent: int) -> NSString:
+        """Returns a string that represents the contents of the array, formatted as a property list."""
+        ...
+
+    # Collecting Paths
+
+    def pathsMatchingExtensions(self, filterTypes: list[str], /) -> list[str]:
+        """Returns an array containing all the pathname elements in the receiving array that have filename extensions from a given array."""
+        ...
+
+    # Randomly Shuffling an Array
+
+    def shuffledArray(self) -> Self:
+        """Returns a new array that lists this array's elements in a random order."""
+        ...
+
+    def shuffledArrayWithRandomSource(self, source: object, /) -> Self:
+        """Returns a new array that lists this array's elements in a random order, using the specified random source."""
+        ...
+
+    # Comparing with Another Array
+
+    @overload
+    def differenceFromArray(self, other: NSArray[_T], /) -> object:
+        """Compares two arrays to create a difference object that represents the changes between them."""
+        ...
+
+    @overload
+    def differenceFromArray(self, other: NSArray[_T], /, *, withOptions: int) -> object:
+        """Compares two arrays, with options, to create a difference object that represents the changes between them."""
+        ...
+
+    @overload
+    def differenceFromArray(
+        self, other: NSArray[_T], /, *, withOptions: int, usingEquivalenceTest: object
+    ) -> object:
+        """Compares two arrays, using the provided block and with options, to create a difference object that represents the changes between them."""
+        ...
+
+    def arrayByApplyingDifference(self, difference: object, /) -> Self | None:
+        """Creates a new array by applying a difference object to an existing array."""
+        ...
+
+    # Sequence protocol methods (inherited from Sequence[_T])
+
+    @overload
+    def __getitem__(self, index: int) -> _T:
+        """Returns the object at the specified index."""
+        ...
+
+    @overload
+    def __getitem__(self, index: slice) -> Self:
+        """Returns a subarray for the specified slice."""
+        ...
+
+    def __len__(self) -> int:
+        """Returns the number of objects in the array."""
+        ...
+
+    def __iter__(self) -> Iterator[_T]:
+        """Returns an iterator over the array elements."""
+        ...
+
+    def __contains__(self, value: object) -> bool:
+        """Returns True if the array contains the specified item."""
+        ...
 
 NSMutableArray = ...
 
