@@ -196,3 +196,99 @@ def test_nsarray_sortedArrayHint():
     hint = array.sortedArrayHint()
     # Just verify it returns something - exact value is implementation-defined
     assert isinstance(hint, NSData)
+
+
+def test_nsarray_isEqualToArray():
+    """Test comparing two arrays for equality."""
+    array1 = NSArray[NSString].arrayWithArray(["a", "b", "c"])
+    array2 = NSArray[NSString].arrayWithArray(["a", "b", "c"])
+    array3 = NSArray[NSString].arrayWithArray(["x", "y", "z"])
+    assert array1.isEqualToArray(array2) is True
+    assert array1.isEqualToArray(array3) is False
+
+
+def test_nsarray_firstObjectCommonWithArray():
+    """Test finding the first common object between two arrays."""
+    array1 = NSArray[NSString].arrayWithArray(["a", "b", "c"])
+    array2 = NSArray[NSString].arrayWithArray(["x", "b", "z"])
+    array3 = NSArray[NSString].arrayWithArray(["x", "y", "z"])
+    common = array1.firstObjectCommonWithArray(array2)
+    assert common == "b"
+    # No common objects
+    no_common = array1.firstObjectCommonWithArray(array3)
+    assert no_common is None
+
+
+def test_nsarray_sortedArrayUsingSelector():
+    """Test sorting an array using a selector."""
+    array = NSArray[NSString].arrayWithArray(["cherry", "apple", "banana"])
+    # Use the compare: selector which is available on NSString
+    from rubicon.objc import SEL
+    sorted_array = array.sortedArrayUsingSelector(SEL("compare:"))
+    assert len(sorted_array) == 3
+    assert sorted_array[0] == "apple"
+    assert sorted_array[1] == "banana"
+    assert sorted_array[2] == "cherry"
+
+
+def test_nsarray_indexOfObject_inRange():
+    """Test finding the index of an object within a specific range."""
+    array = NSArray[NSString].arrayWithArray(["a", "b", "c", "b", "d"])
+    # Find "b" starting from index 2
+    index = array.indexOfObject("b", inRange=(2, 3))  # location=2, length=3
+    assert index == 3  # Should find the second "b"
+
+
+def test_nsarray_indexOfObjectIdenticalTo_inRange():
+    """Test finding the index of an identical object within a specific range."""
+    obj1 = NSString.stringWithString("test")
+    obj2 = NSString.stringWithString("other")
+    obj3 = NSString.stringWithString("test")
+    array = NSArray[NSString].arrayWithArray([obj1, obj2, obj3, obj2])
+    # Find obj3 starting from index 2
+    index = array.indexOfObjectIdenticalTo(obj3, inRange=(2, 2))  # location=2, length=2
+    assert index == 2
+
+
+def test_nsarray_objectsAtIndexes():
+    """Test getting objects at specific indexes."""
+    from rubicon.objc import NSIndexSet
+    array = NSArray[NSString].arrayWithArray(["a", "b", "c", "d", "e"])
+    # Create an index set with indexes 1, 3
+    index_set = NSIndexSet.indexSetWithIndex(1)
+    index_set = index_set.indexSetByAddingIndex(3)
+    objects = array.objectsAtIndexes(index_set)
+    assert len(objects) == 2
+    assert objects[0] == "b"
+    assert objects[1] == "d"
+
+
+def test_nsarray_descriptionWithLocale():
+    """Test getting a localized description of the array."""
+    array = NSArray[NSString].arrayWithArray(["hello", "world"])
+    description = array.descriptionWithLocale(None)
+    assert isinstance(description, NSString)
+    # Should contain the array contents in some form
+    desc_str = str(description)
+    assert "hello" in desc_str or "world" in desc_str
+
+
+def test_nsarray_shuffledArray():
+    """Test creating a shuffled copy of the array."""
+    array = NSArray[NSString].arrayWithArray(["a", "b", "c", "d", "e"])
+    shuffled = array.shuffledArray()
+    # Should have same length
+    assert len(shuffled) == 5
+    # Should contain all same elements (though order may differ)
+    for item in array:
+        assert item in shuffled
+
+
+def test_nsarray_getitem_slice():
+    """Test __getitem__ with slice notation."""
+    array = NSArray[NSString].arrayWithArray(["a", "b", "c", "d", "e"])
+    # Test basic slicing
+    subarray = array[1:3]
+    assert len(subarray) == 2
+    assert subarray[0] == "b"
+    assert subarray[1] == "c"
