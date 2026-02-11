@@ -344,11 +344,6 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     @classmethod
-    def arrayWithContentsOfFile(cls, path: str, /) -> Self | None:
-        """Creates and returns an array containing the contents of the file specified by a given path."""
-        ...
-
-    @classmethod
     def arrayWithObject(cls, anObject: _T, /) -> Self:
         """Creates and returns an array containing a given object."""
         ...
