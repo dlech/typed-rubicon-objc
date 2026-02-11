@@ -4,12 +4,15 @@
 
 # pyright: reportPrivateUsage=false
 
+import ctypes
 from abc import ABCMeta
-from collections.abc import Iterator, Mapping, Sequence
-from typing import TYPE_CHECKING, TypeVar, overload, type_check_only
+from collections.abc import Callable, Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING, Protocol, TypeVar, overload, type_check_only
 
 from rubicon.objc.api import ObjCClass, ObjCInstance, ObjCProtocol
 from rubicon.objc.runtime import SEL, Class, objc_id
+from rubicon.objc.types import NSInteger as NSInteger
+from rubicon.objc.types import NSUInteger as NSUInteger
 from rubicon.objc.types import UnknownPointer
 from typing_extensions import Self
 
@@ -17,6 +20,8 @@ if TYPE_CHECKING:
     from rubicon.objc.api import _ConvertablePyType
 
 __all__ = [
+    "NSInteger",
+    "NSUInteger",
     "NSObject",
     "NSNumber",
     "NSDecimalNumber",
@@ -317,13 +322,21 @@ class NSObject(ObjCInstance, metaclass=ObjCClass):
 
 class NSNumber(NSObject): ...
 class NSDecimalNumber(NSObject): ...
-class NSString(NSObject): ...
+
+class NSString(NSObject):
+    @classmethod
+    def stringWithString(cls, string: NSString | str, /) -> Self: ...
+
 class NSData(NSObject): ...
 
 _T = TypeVar("_T")
 
 @type_check_only
 class _NSArrayMeta(ObjCClass, ABCMeta): ...
+
+_T_co = TypeVar("_T_co", covariant=True)
+
+class _ConvertableTo(Protocol[_T_co]): ...
 
 class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     """An object representing a static ordered collection.
@@ -339,25 +352,25 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     @classmethod
-    def arrayWithArray(cls, array: Sequence[_T], /) -> Self:
+    def arrayWithArray(cls, array: Sequence[_ConvertableTo[_T]], /) -> Self:
         """Creates and returns an array containing the objects in another given array."""
         ...
 
     @classmethod
-    def arrayWithObject(cls, anObject: _T, /) -> Self:
+    def arrayWithObject(cls, anObject: _ConvertableTo[_T], /) -> Self:
         """Creates and returns an array containing a given object."""
         ...
 
     # FIXME: not sure how to call varargs method without crashing
     @overload
     @classmethod
-    def arrayWithObjects(cls, objects: list[_T], /) -> Self:
+    def arrayWithObjects(cls, objects: list[_ConvertableTo[_T]], /) -> Self:
         """Creates and returns an array containing the objects in the argument list."""
         ...
 
     @overload
     @classmethod
-    def arrayWithObjects(cls, objects: object, /, *, count: int) -> Self:
+    def arrayWithObjects(cls, objects: _ConvertableTo[_T], /, *, count: int) -> Self:
         """Creates and returns an array that includes a given number of objects from a given C array."""
         ...
 
@@ -378,12 +391,12 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     @overload
-    def initWithObjects(self, objects: list[_T], /) -> Self:
+    def initWithObjects(self, objects: list[_ConvertableTo[_T]], /) -> Self:
         """Initializes a newly allocated array by placing in it the objects in the argument list."""
         ...
 
     @overload
-    def initWithObjects(self, objects: object, /, *, count: int) -> Self:
+    def initWithObjects(self, objects: _ConvertableTo[_T], /, *, count: int) -> Self:
         """Initializes a newly allocated array to include a given number of objects from a given C array."""
         ...
 
@@ -393,14 +406,15 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Querying an Array
 
-    def containsObject(self, anObject: _T, /) -> bool:
+    def containsObject(self, anObject: _ConvertableTo[_T], /) -> bool:
         """Returns a Boolean value that indicates whether a given object is present in the array."""
         ...
 
-    @property
-    def count(self) -> int:  # type: ignore[override]
-        """The number of objects in the array."""
-        ...
+    # Python Sequence count takes precedence
+    # @property
+    # def count(self) -> int:
+    #     """The number of objects in the array."""
+    #     ...
 
     @overload
     def getObjects(self, objects: object, /) -> None:
@@ -412,12 +426,10 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Copies references to objects contained in the array that fall within the specified range to aBuffer."""
         ...
 
-    @property
     def firstObject(self) -> _T | None:
         """The first object in the array."""
         ...
 
-    @property
     def lastObject(self) -> _T | None:
         """The last object in the array."""
         ...
@@ -445,23 +457,25 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     # Finding Objects in an Array
 
     @overload
-    def indexOfObject(self, anObject: _T, /) -> int:
+    def indexOfObject(self, anObject: _ConvertableTo[_T], /) -> int:
         """Returns the lowest index whose corresponding array value is equal to a given object."""
         ...
 
     @overload
-    def indexOfObject(self, anObject: _T, /, *, inRange: tuple[int, int]) -> int:
+    def indexOfObject(
+        self, anObject: _ConvertableTo[_T], /, *, inRange: tuple[int, int]
+    ) -> int:
         """Returns the lowest index within a specified range whose corresponding array value is equal to a given object."""
         ...
 
     @overload
-    def indexOfObjectIdenticalTo(self, anObject: _T, /) -> int:
+    def indexOfObjectIdenticalTo(self, anObject: _ConvertableTo[_T], /) -> int:
         """Returns the lowest index whose corresponding array value is identical to a given object."""
         ...
 
     @overload
     def indexOfObjectIdenticalTo(
-        self, anObject: _T, /, *, inRange: tuple[int, int]
+        self, anObject: _ConvertableTo[_T], /, *, inRange: tuple[int, int]
     ) -> int:
         """Returns the lowest index within a specified range whose corresponding array value is identical to a given object."""
         ...
@@ -475,23 +489,39 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     def indexOfObjectAtIndexes(
-        self, s: object, /, *, options: int, passingTest: object
+        self,
+        s: object,
+        /,
+        *,
+        options: int,
+        passingTest: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool],
     ) -> int:
         """Returns the index, from a given set of indexes, of the first object in the array that passes a test in a given block for a given set of enumeration options."""
         ...
 
-    def indexesOfObjectsPassingTest(self, predicate: object, /) -> object:
+    def indexesOfObjectsPassingTest(
+        self, predicate: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool], /
+    ) -> object:
         """Returns the indexes of objects in the array that pass a test in a given block."""
         ...
 
     def indexesOfObjectsWithOptions(
-        self, opts: int, /, *, passingTest: object
+        self,
+        opts: int,
+        /,
+        *,
+        passingTest: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool],
     ) -> object:
         """Returns the indexes of objects in the array that pass a test in a given block for a given set of enumeration options."""
         ...
 
     def indexesOfObjectsAtIndexes(
-        self, s: object, /, *, options: int, passingTest: object
+        self,
+        s: object,
+        /,
+        *,
+        options: int,
+        passingTest: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], bool],
     ) -> object:
         """Returns the indexes, from a given set of indexes, of objects in the array that pass a test in a given block for a given set of enumeration options."""
         ...
@@ -519,7 +549,12 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         ...
 
     def enumerateObjectsAtIndexes(
-        self, s: object, /, *, options: int, usingBlock: object
+        self,
+        s: object,
+        /,
+        *,
+        options: int,
+        usingBlock: Callable[[_T, int, ctypes._Pointer[ctypes.c_bool]], None],
     ) -> None:
         """Executes a given block using the objects in the array at the specified indexes."""
         ...
@@ -536,7 +571,7 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Deriving New Arrays
 
-    def arrayByAddingObject(self, anObject: _T, /) -> Self:
+    def arrayByAddingObject(self, anObject: _ConvertableTo[_T], /) -> Self:
         """Returns a new array that is a copy of the receiving array with a given object added to the end."""
         ...
 
@@ -554,7 +589,6 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
 
     # Sorting
 
-    @property
     def sortedArrayHint(self) -> NSData:
         """Analyzes the array and returns a "hint" that speeds the sorting of the array when the hint is supplied to sortedArrayUsingFunction:context:hint:."""
         ...
