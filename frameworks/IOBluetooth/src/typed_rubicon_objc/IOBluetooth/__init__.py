@@ -10,6 +10,7 @@ _CLASS_NAMES = [
     "IOBluetoothDeviceInquiry",
     "IOBluetoothSDPUUID",
     "IOBluetoothRFCOMMChannel",
+    "IOBluetoothRFCOMMChannelDelegate",
 ]
 
 _CLASSES: dict[str, Any] = {}
