@@ -496,18 +496,6 @@ class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
         """Returns the indexes, from a given set of indexes, of objects in the array that pass a test in a given block for a given set of enumeration options."""
         ...
 
-    def indexOfObject(
-        self,
-        obj: _T,
-        /,
-        *,
-        inSortedRange: tuple[int, int],
-        options: int,
-        usingComparator: object,
-    ) -> int:
-        """Returns the index, within a specified range, of an object compared with elements in the array using a given NSComparator block."""
-        ...
-
     # Sending Messages to Elements
 
     @overload
