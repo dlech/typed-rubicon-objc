@@ -529,7 +529,7 @@ class ObjCClass(ObjCInstance, type):
         bases: tuple[Any, ...] | None = None,
         attrs: dict[str, Any] | None = None,
         *,
-        protocols: tuple[ObjCProtocol, ...] | None = None,
+        protocols: Iterable[ObjCProtocol] | None = None,
         auto_rename: bool | None = None,
     ) -> type[ObjCMetaClass] | type[ObjCClass] | None:
         """The constructor accepts either the name of an Objective-C class to look up
