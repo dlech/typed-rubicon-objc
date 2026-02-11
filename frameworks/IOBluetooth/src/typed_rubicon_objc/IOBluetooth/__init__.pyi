@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     BluetoothHCIPageTimeout: TypeAlias = int
     BluetoothHCIRSSIValue: TypeAlias = int
 
-IOBluetoothRFCOMMChannelDelegate: ObjCProtocol
+class IOBluetoothRFCOMMChannelDelegate(ObjCProtocol): ...
 
 kDefaultPageTimeout: BluetoothHCIPageTimeout
 
