@@ -1,6 +1,6 @@
 ci:
   # These require installing Python packages, so fail on pre-commit.ci
-  skip: [pyright-pretty, ty-check]
+  skip: [ty-check]
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
@@ -18,10 +18,6 @@ repos:
   rev: 0.10.0
   hooks:
     - id: uv-lock
-- repo: https://github.com/northisup/pyright-pretty
-  rev: v0.1.0
-  hooks:
-  - id: pyright-pretty
 - repo: https://github.com/allganize/ty-pre-commit
   rev: v0.0.15
   hooks:
