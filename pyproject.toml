@@ -16,19 +16,23 @@ lint = [
     "pre-commit>=4.5.1",
     "pyright>=1.1.408",
     "ruff>=0.15.0",
-    "ty>=0.0.15",
+    "ty>=0.0.18",
+    "setuptools>=80.0.0",
 ]
 test = [
     "pytest>=9.0.2",
+    "test-protocol-ext",
 ]
 
 [tool.uv.sources]
 "typed-rubicon-objc.IOBluetooth" = { workspace = true }
 "typed-rubicon-objc.Foundation" = { workspace = true }
+"test-protocol-ext" = { workspace = true }
 
 [tool.uv.workspace]
 members = [
     "frameworks/*",
+    "tests/foundation/protocol_ext",
 ]
 
 [tool.mypy]

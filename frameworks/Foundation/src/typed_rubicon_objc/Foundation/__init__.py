@@ -7,7 +7,7 @@ from rubicon.objc.api import NSDictionary as NSDictionary
 from rubicon.objc.api import NSNumber as NSNumber
 from rubicon.objc.api import NSObject as NSObject
 from rubicon.objc.api import NSString as NSString
-from rubicon.objc.api import ObjCClass
+from rubicon.objc.api import ObjCClass, ObjCProtocol
 from rubicon.objc.types import NSInteger as NSInteger
 from rubicon.objc.types import NSUInteger as NSUInteger
 
@@ -39,12 +39,25 @@ _CLASSES = [
     "NSOrderedSet",
     "NSCountedSet",
     "NSCharacterSet",
+    "NSXPCConnection",
+    "NSXPCListener",
+    "NSXPCListenerEndpoint",
+    "NSXPCInterface",
 ]
 
 __all__.extend(_CLASSES)  # pyright: ignore[reportUnsupportedDunderAll]
 
 _CLASS_MAP: dict[str, Any] = {}
 
+
+_DELEGATES = [
+    "NSSecureCoding",
+    "NSXPCListenerDelegate",
+]
+
+__all__.extend(_DELEGATES)  # pyright: ignore[reportUnsupportedDunderAll]
+
+_DELEGATE_MAP: dict[str, Any] = {}
 
 # HACK: Add __class_getitem__ to NSArray to support NSArray[T] generics
 if not hasattr(NSArray, "__class_getitem__"):
@@ -59,3 +72,13 @@ def __getattr__(name: str):
             cls = ObjCClass(name)
 
             return _CLASS_MAP.setdefault(name, cls)
+
+    if name in _DELEGATES:
+        try:
+            return _DELEGATE_MAP[name]
+        except KeyError:
+            protocol = ObjCProtocol(name)
+
+            return _DELEGATE_MAP.setdefault(name, protocol)
+
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -1,2 +1,8 @@
 __pycache__/
 .venv/
+.cache/
+
+*.egg-info
+*.so
+
+compile_commands.json

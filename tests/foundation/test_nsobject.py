@@ -1,4 +1,3 @@
-import pytest
 from rubicon.objc.api import ObjCClass, ObjCProtocol
 from rubicon.objc.runtime import SEL, objc_id
 from rubicon.objc.types import UnknownPointer
@@ -98,8 +97,6 @@ def test_nsobject_instanceMethodSignatureForSelector():
 def test_nsobject_conformsToProtocol():
     """Test conformsToProtocol: class method."""
     protocol = ObjCProtocol("NSObject")
-    if protocol is None:
-        pytest.skip("NSObject protocol not available")
     result = NSObject.conformsToProtocol(protocol)
     assert isinstance(result, bool)
 

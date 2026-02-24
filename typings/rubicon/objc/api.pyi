@@ -401,7 +401,7 @@ class ObjCInstance:
         _bases: tuple[type, ...] | None = None,
         _ns: str | None = None,
         _implicitly_owned: bool = False,
-    ) -> Self | None:
+    ) -> Self:
         """The constructor accepts an :class:`~rubicon.objc.runtime.objc_id` or anything
         that can be cast to one, such as a :class:`~ctypes.c_void_p`, or an existing
         :class:`ObjCInstance`.
@@ -656,10 +656,7 @@ class ObjCMetaClass(ObjCClass):
         """
         ...
 
-class _NSObjectMeta(type):
-    def __new__(cls, protocols: list[ObjCProtocol] = []) -> Any: ...
-
-class NSObject(ObjCInstance, metaclass=_NSObjectMeta):
+class NSObject(ObjCInstance, metaclass=ObjCClass):
     @classmethod
     def alloc(cls) -> Self: ...
     @classmethod
@@ -708,7 +705,8 @@ class NSDictionary(NSObject, Mapping[_TKey, _TValue]):
     def __iter__(self) -> Iterator[_TKey]: ...
 
 NSMutableDictionary = ...
-Protocol = ...
+
+class Protocol(metaclass=ObjCClass): ...
 
 @overload
 def py_from_ns(nsobj: NSString) -> str: ...
@@ -850,7 +848,7 @@ def ns_from_py(
 at = ns_from_py
 
 @for_objcclass(Protocol)
-class ObjCProtocol(ObjCInstance):
+class ObjCProtocol(ObjCInstance, type):
     """Python wrapper for an Objective-C protocol."""
     @property
     def name(self) -> Any:
@@ -867,9 +865,9 @@ class ObjCProtocol(ObjCInstance):
         cls,
         name_or_ptr: str | bytes | ObjCInstance,
         bases: tuple[Any, ...] | None = None,
-        ns: str | None = None,
+        ns: dict[str, Any] | None = None,
         auto_rename: bool | None = None,
-    ) -> ObjCProtocol | None:
+    ) -> ObjCProtocol:
         """The constructor accepts either the name of an Objective-C protocol to look up
         (as :class:`str` or :class:`bytes`), or a pointer to an existing protocol object
         (in any form accepted by :class:`ObjCInstance`).
