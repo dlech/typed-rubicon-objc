@@ -206,8 +206,8 @@ def send_message(
     selector: str | bytes | SEL,
     *args: Any,
     restype: Any = ...,
-    argtypes: Sequence[Any] | None = None,
-    varargs: Sequence[Any] | None = None,
+    argtypes: list[Any] | None = None,
+    varargs: list[Any] | None = None,
 ) -> Any:
     """Call a method on the receiver with the given selector and arguments.
 

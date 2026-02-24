@@ -5,11 +5,18 @@
 # pyright: reportPrivateUsage=false
 
 import ctypes
+import typing
 from abc import ABCMeta
 from collections.abc import Callable, Iterator, Mapping, Sequence
-from typing import TYPE_CHECKING, Protocol, TypeVar, overload, type_check_only
+from typing import (
+    TYPE_CHECKING,
+    TypeAlias,
+    TypeVar,
+    overload,
+    type_check_only,
+)
 
-from rubicon.objc.api import ObjCClass, ObjCInstance, ObjCProtocol
+from rubicon.objc.api import Block, ObjCClass, ObjCInstance, ObjCProtocol, Protocol
 from rubicon.objc.runtime import SEL, Class, objc_id
 from rubicon.objc.types import NSInteger as NSInteger
 from rubicon.objc.types import NSUInteger as NSUInteger
@@ -336,7 +343,7 @@ class _NSArrayMeta(ObjCClass, ABCMeta): ...
 
 _T_co = TypeVar("_T_co", covariant=True)
 
-class _ConvertableTo(Protocol[_T_co]): ...
+class _ConvertableTo(typing.Protocol[_T_co]): ...
 
 class NSArray(NSObject, Sequence[_T], metaclass=_NSArrayMeta):
     """An object representing a static ordered collection.
@@ -731,3 +738,295 @@ class NSMethodSignature(NSObject): ...
 class NSUUID(NSObject): ...
 class NSCoder(NSObject): ...
 class NSDate(NSObject): ...
+
+class NSError(NSObject):
+    @property
+    def domain(self) -> NSString: ...
+    @property
+    def code(self) -> NSInteger: ...
+    @property
+    def userInfo(self) -> NSDictionary[NSString, objc_id]: ...
+
+NSXPCConnectionOptions: TypeAlias = NSUInteger
+
+NSXPCConnectionPrivileged: NSXPCConnectionOptions
+
+class NSXPCConnection(NSObject):
+    """A bidirectional communication channel between two processes."""
+
+    def initWithListenerEndpoint(self, endpoint: NSXPCListenerEndpoint, /) -> Self:
+        """Initializes a connection to a listener identified by an endpoint object."""
+        ...
+
+    def initWithMachServiceName(
+        self,
+        name: NSString | str,
+        /,
+        *,
+        options: NSXPCConnectionOptions,
+    ) -> Self:
+        """Initializes a connection to a LaunchAgent or LaunchDaemon by mach service name."""
+        ...
+
+    def initWithServiceName(self, serviceName: NSString | str, /) -> Self:
+        """Initializes a connection to an XPC service in the current app's bundle."""
+        ...
+
+    def activate(self) -> None:
+        """Activates the connection."""
+        ...
+
+    def resume(self) -> None:
+        """Starts or resumes handling of messages on the connection."""
+        ...
+
+    def invalidate(self) -> None:
+        """Invalidates the connection so it can't be resumed or reused."""
+        ...
+
+    def suspend(self) -> None:
+        """Suspends handling of incoming messages on the connection."""
+        ...
+
+    @property
+    def interruptionHandler(self) -> Block | None:
+        """A handler called when the remote process exits or crashes."""
+        ...
+
+    @interruptionHandler.setter
+    def interruptionHandler(self, handler: Block | None) -> None: ...
+    @property
+    def invalidationHandler(self) -> Block | None:
+        """A handler called when the connection becomes invalid and can't be re-established."""
+        ...
+
+    @invalidationHandler.setter
+    def invalidationHandler(self, handler: Block | None) -> None: ...
+    @classmethod
+    def currentConnection(cls) -> Self | None:
+        """Returns the current connection while handling a call on an exported object."""
+        ...
+
+    def scheduleSendBarrierBlock(self, barrier: Block, /) -> None:
+        """Schedules a barrier block to run after all currently enqueued outgoing messages are sent."""
+        ...
+
+    @property
+    def serviceName(self) -> NSString | None:
+        """The service name this connection is configured to connect to."""
+        ...
+
+    @property
+    def endpoint(self) -> NSXPCListenerEndpoint | None:
+        """The listener endpoint used to create this connection, if any."""
+        ...
+
+    @property
+    def exportedInterface(self) -> NSXPCInterface | None:
+        """The interface that describes methods exposed by the exported object."""
+        ...
+
+    @exportedInterface.setter
+    def exportedInterface(self, interface: NSXPCInterface | None) -> None: ...
+    @property
+    def exportedObject(self) -> NSObject | None:
+        """The local object exported to the remote process."""
+        ...
+
+    @exportedObject.setter
+    def exportedObject(self, object: objc_id | NSObject | None) -> None: ...
+    @property
+    def remoteObjectInterface(self) -> NSXPCInterface | None:
+        """The interface describing methods available on the remote object."""
+        ...
+
+    @remoteObjectInterface.setter
+    def remoteObjectInterface(self, interface: NSXPCInterface | None) -> None: ...
+    def remoteObjectProxy(self) -> objc_id:
+        """Returns a proxy for the remote object exported by the other process."""
+        ...
+
+    @property
+    def auditSessionIdentifier(self) -> int:
+        """The BSM audit session identifier for the connecting process."""
+        ...
+
+    @property
+    def processIdentifier(self) -> int:
+        """The process identifier (PID) of the connecting process."""
+        ...
+
+    @property
+    def effectiveGroupIdentifier(self) -> int:
+        """The effective group identifier (EGID) of the connecting process."""
+        ...
+
+    @property
+    def effectiveUserIdentifier(self) -> int:
+        """The effective user identifier (EUID) of the connecting process."""
+        ...
+
+    def remoteObjectProxyWithErrorHandler(
+        self, handler: Block | Callable[[NSError], None], /
+    ) -> objc_id:
+        """Returns a remote object proxy that invokes a handler when message sending fails."""
+        ...
+
+    def synchronousRemoteObjectProxyWithErrorHandler(
+        self, handler: Block | Callable[[NSError], None], /
+    ) -> objc_id:
+        """Returns a synchronous remote object proxy with an error handler."""
+        ...
+
+    def setCodeSigningRequirement(self, requirement: NSString | str, /) -> None:
+        """Sets the code-signing requirement that remote code must satisfy for this connection."""
+        ...
+
+class NSXPCInterface(NSObject):
+    """Describes the messaging protocol and allowed classes for an XPC endpoint."""
+
+    @property
+    def protocol(self) -> Protocol:
+        """The Objective-C protocol that this interface is based on."""
+        ...
+
+    def classesForSelector(
+        self,
+        sel: SEL,
+        /,
+        *,
+        argumentIndex: NSUInteger,
+        ofReply: bool,
+    ) -> object | None:
+        """Returns allowed classes for the specified collection argument of a selector."""
+        ...
+
+    def interfaceForSelector(
+        self,
+        sel: SEL,
+        /,
+        *,
+        argumentIndex: NSUInteger,
+        ofReply: bool,
+    ) -> NSXPCInterface | None:
+        """
+        Returns the interface configured for the specified selector argument.
+
+        .. danger:: This isn't usable with protocols created in Python, it will
+            cause a crash if called with the following error message:
+
+            *** Terminating app due to uncaught exception 'NSInvalidArgumentException',
+            reason: 'NSXPCInterface: Unable to get extended method signature from Protocol
+            data (...). Use of clang is required for NSXPCInterface.'
+        """
+        ...
+
+    def setClasses(
+        self,
+        classes: object,
+        /,
+        *,
+        forSelector: SEL,
+        argumentIndex: NSUInteger,
+        ofReply: bool,
+    ) -> None:
+        """Sets allowed classes for the specified collection argument of a selector."""
+        ...
+
+    def setInterface(
+        self,
+        ifc: NSXPCInterface | None,
+        /,
+        *,
+        forSelector: SEL,
+        argumentIndex: NSUInteger,
+        ofReply: bool,
+    ) -> None:
+        """Configures a selector argument to be transmitted as a proxy using another interface."""
+        ...
+
+    def setXPCType(
+        self,
+        xpcType: objc_id,
+        /,
+        *,
+        forSelector: SEL,
+        argumentIndex: NSUInteger,
+        ofReply: bool,
+    ) -> None:
+        """Sets the required low-level XPC type for a selector argument."""
+        ...
+
+    def xpcTypeForSelector(
+        self,
+        sel: SEL,
+        /,
+        *,
+        argumentIndex: NSUInteger,
+        ofReply: bool,
+    ) -> objc_id | None:
+        """Returns the configured low-level XPC type for a selector argument."""
+        ...
+
+    @classmethod
+    def interfaceWithProtocol(cls, protocol: ObjCProtocol, /) -> Self:
+        """Returns an interface instance for the given Objective-C protocol."""
+        ...
+
+NSXPCListenerDelegate: ObjCProtocol
+
+class NSXPCListener(NSObject):
+    """A listener object that accepts incoming XPC connections."""
+
+    def initWithMachServiceName(self, name: NSString | str, /) -> Self:
+        """Initializes a listener for a LaunchAgent or LaunchDaemon mach service name."""
+        ...
+
+    @classmethod
+    def serviceListener(cls) -> Self:
+        """Returns the singleton listener for the current XPC service."""
+        ...
+
+    @classmethod
+    def anonymousListener(cls) -> Self:
+        """Returns a new anonymous listener."""
+        ...
+
+    @property
+    def delegate(self) -> NSObject | None:
+        """The delegate object that decides whether to accept incoming connections."""
+        ...
+
+    @delegate.setter
+    def delegate(self, delegate: objc_id | NSObject | None) -> None: ...
+    @property
+    def endpoint(self) -> NSXPCListenerEndpoint:
+        """An endpoint that can be sent over an existing connection to allow clients to connect."""
+        ...
+
+    def activate(self) -> None:
+        """Activates the listener."""
+        ...
+
+    def resume(self) -> None:
+        """Starts processing incoming connection requests."""
+        ...
+
+    def invalidate(self) -> None:
+        """Invalidates the listener."""
+        ...
+
+    def suspend(self) -> None:
+        """Suspends the listener."""
+        ...
+
+    def setConnectionCodeSigningRequirement(
+        self, requirement: NSString | str, /
+    ) -> None:
+        """Sets the code-signing requirement for connections accepted by this listener."""
+        ...
+
+class NSXPCListenerEndpoint(NSObject):
+    """An endpoint object that identifies an NSXPCListener in another process."""
+
+NSSecureCoding: ObjCProtocol
